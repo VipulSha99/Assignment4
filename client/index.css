@@ -1,0 +1,87 @@
+body{
+    font-family: sans-serif;
+}
+.main{
+    align-items: center;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+#load_button{
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+#table_tag{
+    width: 100%;
+    border: 2px solid;
+    border-radius: 10px;
+    border-color: darkgray;
+    padding: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    box-shadow: 2px 5px 2px gainsboro;
+    border-collapse: separate;
+    border-spacing: 0 1em;
+    display:none;
+    
+
+}
+
+#table_tag tr{
+    border-bottom: 2px solid;
+}
+#table_tag th{
+    font-size: 20px;
+    padding: 10px;
+    text-align: center;
+}
+#table_tag td{
+    text-align: center;
+    font-size: 1em;
+    /* box-sizing: border-box; */
+    
+}
+td input{
+    height: 30px;
+    font-size: 1em;
+    background-color: white;
+    
+}
+.btn{
+    margin-right: 10px;
+    background-color: dodgerblue;
+    color: white;
+    border-radius: 12px;
+}
+.btn1{
+    background-color: coral;
+    border-radius: 12px;
+}
+
+#input_tag{
+    /* display: flex; */
+    justify-content: space-around;
+    text-align: center;
+    font-size: 1em;
+    margin-bottom: 10px;
+    display:none;
+}
+
+#input_tag input{
+    height: 30px;
+    font-size: 1em;
+    background-color: white;
+    border-color: #cbb3b3;
+    border-radius: 10px;
+}
+#btn{
+    padding: 10px;
+    padding-bottom: 25px;
+    background-color: dodgerblue !important;
+    color:white
+}
