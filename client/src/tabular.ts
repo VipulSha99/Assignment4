@@ -32,7 +32,7 @@ function loadTableData(){
     let row = table.insertRow(0);
     column_list = Object.keys(APIData[0]);
     column_list.push("Edit")
-
+    UsersData.splice(0,UsersData.length);
     column_list.forEach((column)=>{
         let headerCell = document.createElement("th");
         headerCell.innerHTML = column;
