@@ -14,7 +14,7 @@ function api<T>(url: string): Promise<T> {
   }
 document.getElementById("load_button")?.addEventListener("click",async()=>{
     let data: Array<object> = await api("http://localhost:9010/user");
-    // console.log(data)
+    console.log(data)
     if(document.getElementById("load_button")!.innerText === "Refresh data"){
         let Table = document.getElementById("table_tag") as HTMLTableElement;
         Table.innerHTML = "";
