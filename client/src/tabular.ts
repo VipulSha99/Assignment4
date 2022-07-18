@@ -1,10 +1,11 @@
 import {User} from "./app.js";
-import {Role} from "./models/model.js";
+import {Role,referType,columnName} from "./models/model.js";
 
-let APIData: Array<object> = [];
-let UsersData: Array<Array<string>> = [];
-let column_list: Array<string> = [];
+let apiData: Array<object> = [];
+let usersData: Array<Array<string>> = [];
+let columnList: Array<string> = [];
 
+// this api function is used to fetch the user data from the server
 function api<T>(url: string): Promise<T> {
     return fetch(url)
       .then(response => {
@@ -12,6 +13,8 @@ function api<T>(url: string): Promise<T> {
       })
   
   }
+
+// this load_button element do function when click on load_button and fetch the data from server
 document.getElementById("load_button")?.addEventListener("click",async()=>{
     let data: Array<object> = await api("http://localhost:9010/user");
     console.log(data)
@@ -23,69 +26,71 @@ document.getElementById("load_button")?.addEventListener("click",async()=>{
         document.getElementById("table_tag")!.style.display = "revert";
         document.getElementById("input_tag")!.style.display = "flex";
     }
-    APIData = data;
+    apiData = data;
     loadTableData();
 })
 
+// this function is used to dynamically populate the user data fetch by api call into the table_tag element
 function loadTableData(){
     let table = document.getElementById("table_tag") as HTMLTableElement;
     let row = table.insertRow(0);
-    column_list = Object.keys(APIData[0]);
-    column_list.push("Edit")
-    UsersData.splice(0,UsersData.length);
-    column_list.forEach((column)=>{
+    columnList = Object.keys(apiData[0]);
+    columnList.push("Edit")
+    usersData.splice(0,usersData.length);
+    columnList.forEach((column)=>{
         let headerCell = document.createElement("th");
         headerCell.innerHTML = column;
         row.appendChild(headerCell);
         
     })
-    for (let i = 0; i < APIData.length; i++) { 
+    for (let i = 0; i < apiData.length; i++) { 
         row = table.insertRow(i+1);
         let arr: Array<string> = [];
-        column_list.forEach((column)=>{
-            if(column ==="Edit"){
+        columnList.forEach((column)=>{
+            if(column ===columnName.edit){
                 let btn = document.createElement('input') as HTMLInputElement;
                 btn.type = "button";
                 btn.className = "btn";
                 btn.value = "Edit";
                 let cell = row.insertCell(-1)
                 cell.appendChild(btn);
-                btn.onclick = (function() {user.selectedRowEdit(this);});
+                btn.onclick = (function() {user.selectedRowEdit(this as unknown as referType)});
 
                 let btn1 = document.createElement('input') as HTMLInputElement;
                 btn1.type = "button";
                 btn1.className = "btn1";
                 btn1.value = "Delete";
-                btn1.onclick = (function() {user.selectedRowDelete(this)});
+                btn1.onclick = (function() {user.selectedRowDelete(this as unknown as referType)});
 
                 cell.appendChild(btn1);
                 return
             }
             let cell = row.insertCell(-1)
             let inputField = document.createElement('input') as HTMLInputElement;
-            if(column==="Phone Number"){
+            if(column===columnName.phoneNumber){
                 inputField.type="number";
             }
-            else if(column==="Email"){
+            else if(column===columnName.email){
                 inputField.type="email";
             }
             else{
                 inputField.type = "text";
             }
-            inputField.value =(APIData[i] as any)[column]
+            inputField.value =(apiData[i] as any)[column]
             inputField.disabled = true
             inputField.required = true
-            arr.push((APIData[i] as any)[column])
+            arr.push((apiData[i] as any)[column])
             cell.appendChild(inputField);
         })        
-        UsersData.push(arr);
+        usersData.push(arr);
 
     }
 
 }; 
 
-let user = new User(APIData,UsersData);
+let user = new User(apiData,usersData);
 
+// this event execute on submit to create the new user entry into the table
 document.getElementById("input_tag")?.addEventListener("submit",(e:any)=>{
     e.preventDefault();
     if(e.target[5].value in Role){

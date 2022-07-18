@@ -1,11 +1,13 @@
-import {UserAction , Role} from "./models/model.js";
+import {userAction , Role, referType} from "./models/model.js";
 
+
+// this function is used as a decorator to format the dateTime for the created user
 function userCreatedDate(){
     return function(target: any,key:string,descriptor:PropertyDescriptor){
         let val = descriptor.value
         descriptor.value = function(... args:any[]){
             let arr:Array<string> = [];
-            for(let j=0;j<7;j++){
+            for(let j=0;j<args[0].target.length-2;j++){
                 arr.push(args[0].target[j].value)
             }
             let d: Date = new Date();
@@ -16,21 +18,22 @@ function userCreatedDate(){
     }
 }
 
-export class User<T extends Array<object>,U extends Array<Array<string>>> implements UserAction{
-    APIData:Array<object> = [];
-    UsersData:Array<Array<string>> = [];
+export class User<T extends Array<object>,U extends Array<Array<string>>> implements userAction{
+    apiData:Array<object> = [];
+    usersData:Array<Array<string>> = [];
     
-    constructor( APIData:T,UsersData:U){
-        this.APIData = APIData
-        this.UsersData = UsersData
+    constructor( apiData:T,usersData:U){
+        this.apiData = apiData
+        this.usersData = usersData
     }
     
     @userCreatedDate()
+    // This addUser method is used to create new user and add to the table
     addUser(arr:Array<string>){
-        this.UsersData.push(arr);
+        this.usersData.push(arr);
         document.getElementById("reset")?.click();
         let table = document.getElementById("table_tag") as HTMLTableElement;
-        let i = this.UsersData.length-1;
+        let i = this.usersData.length-1;
         let row = table.insertRow(i+1);
         for(let j=0;j<arr.length+1;j++){
             if(j ===arr.length){
@@ -40,13 +43,13 @@ export class User<T extends Array<object>,U extends Array<Array<string>>> implem
                 btn.value = "Edit";
                 let cell = row.insertCell(-1)
                 cell.appendChild(btn);
-                btn.onclick = (()=> {this.selectedRowEdit(btn)});
+                btn.onclick = (()=> {this.selectedRowEdit(btn as unknown as referType)});
 
                 let btn1 = document.createElement('input') as HTMLInputElement;
                 btn1.type = "button";
                 btn1.className = "btn1";
                 btn1.value = "Delete";
-                btn1.onclick = (()=> {this.selectedRowDelete(btn1)});
+                btn1.onclick = (()=> {this.selectedRowDelete(btn1 as unknown as referType)});
 
                 cell.appendChild(btn1);
                 return
@@ -62,13 +65,14 @@ export class User<T extends Array<object>,U extends Array<Array<string>>> implem
             else{
                 inputField.type = "text";
             }
-            inputField.value =this.UsersData[i][j]
+            inputField.value =this.usersData[i][j]
             inputField.disabled = true
             cell.appendChild(inputField);
         }   
     }
 
-    selectedRowEdit(refer:any){
+    // this selectedRowEdit method is used to edit the selected user row
+    selectedRowEdit(refer:referType){
         let j : number = 0;
             for(j=0;j<refer.parentNode.parentNode.cells.length-1;j++){
                 if(j===7){
@@ -77,7 +81,7 @@ export class User<T extends Array<object>,U extends Array<Array<string>>> implem
                 refer.parentNode.parentNode.cells[j].childNodes[0].disabled = false
             }
             refer.parentNode.parentNode.cells[j].childNodes[0].value = "Save";
-            let arrChanged = [...this.UsersData[refer.parentNode.parentNode.rowIndex-1]]
+            let arrChanged = [...this.usersData[refer.parentNode.parentNode.rowIndex-1]]
             refer.parentNode.parentNode.cells[j].childNodes[0].onclick=()=>{
                 if(refer.parentNode.parentNode.cells[5].childNodes[0].value in Role){}
                 else{
@@ -90,7 +94,7 @@ export class User<T extends Array<object>,U extends Array<Array<string>>> implem
                     refer.parentNode.parentNode.cells[j].childNodes[0].disabled = true
                     
                 }
-                this.UsersData[refer.parentNode.parentNode.rowIndex-1] = arrChanged;
+                this.usersData[refer.parentNode.parentNode.rowIndex-1] = arrChanged;
                 refer.parentNode.parentNode.cells[j].childNodes[1].value = "Delete";
                 refer.parentNode.parentNode.cells[j].childNodes[1].onclick = (()=>{this.selectedRowDelete(refer)})
                 refer.parentNode.parentNode.cells[j].childNodes[0].value = "Edit";
@@ -100,7 +104,7 @@ export class User<T extends Array<object>,U extends Array<Array<string>>> implem
     
             refer.parentNode.parentNode.cells[j].childNodes[1].onclick=()=>{
                 for(j=0;j<refer.parentNode.parentNode.cells.length-1;j++){
-                    refer.parentNode.parentNode.cells[j].childNodes[0].value = this.UsersData[refer.parentNode.parentNode.rowIndex-1][j]
+                    refer.parentNode.parentNode.cells[j].childNodes[0].value = this.usersData[refer.parentNode.parentNode.rowIndex-1][j]
                     refer.parentNode.parentNode.cells[j].childNodes[0].disabled = true
     
                 }
@@ -111,11 +115,12 @@ export class User<T extends Array<object>,U extends Array<Array<string>>> implem
             }
     }
 
-    selectedRowDelete(i:any){
+    // this method is used to delete or remove the selected user row from the table
+    selectedRowDelete(i:referType){
         let rIndex,table = document.getElementById("table_tag") as HTMLTableElement;
                 rIndex = i.parentNode.parentNode.rowIndex;
                 table.deleteRow(rIndex)
-                this.UsersData.splice(rIndex-1,1)
+                this.usersData.splice(rIndex-1,1)
     }
 
 }
